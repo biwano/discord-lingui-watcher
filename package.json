@@ -1,0 +1,10 @@
+{
+  "name": "discord-lingui-watcher",
+  "version": "1.0.0",
+  "description": "A discord bot that gives you translation coverage of a linguijs project",
+  "main": "index.js",
+  "repository": "https://github.com/biwano/discord-lingui-watcher.git",
+  "author": "biwano",
+  "license": "MIT",
+  "private": false
+}
