@@ -8,15 +8,14 @@
   "license": "MIT",
   "private": false,
   "dependencies": {
-    "await-spawn": "^4.0.2",
-    "dotenv": "^10.0.0",
-    "eris": "^0.15.1"
+    "eris": "^0.15.1",
+    "yargs": "^17.2.1"
   },
   "watch": {
     "start": "*.js"
   },
   "scripts": {
-    "start": "node index.js",
+    "start": "node index.js listen",
     "watch": "npm-watch"
   },
   "devDependencies": {

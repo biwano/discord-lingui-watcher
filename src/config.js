@@ -1,8 +1,7 @@
 const fs = require('fs');
-
-module.exports = class Config {
+class Config {
 	constructor() {
-		this.configpath = `${__dirname}/config.json`;
+		this.configpath = `${__dirname}/../config.json`;
 	}
 	get_config() {
 		try {
@@ -22,3 +21,5 @@ module.exports = class Config {
 		fs.writeFileSync(this.configpath, JSON.stringify(config, null, 4), 'utf8');
 	}
 }
+
+module.exports = new Config()

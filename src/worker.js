@@ -1,8 +1,7 @@
 const Repository = require('./repository');
+const config = require('./config');
 
 TRIGGER = "!stats";
-WHITELISTED_CHANNELS=["90555483461740547"];
-
 BQ = "\`\`\`";
 
 module.exports = class Worker {
@@ -21,9 +20,10 @@ module.exports = class Worker {
 	    this.send_message(msg.channel.id, text);
 	}
 	async handle_message(msg) {
+
 	    if (msg.content.startsWith(TRIGGER)) {
 	        console.log("Message received from", msg.channel.id);
-	        if (WHITELISTED_CHANNELS.includes(msg.channel.id)) {
+	        if (!config.get("whitelisted_channels").includes(msg.channel.id)) {
 	            this.respond(msg, "I don't know you.");
 	            return;
 	        } 

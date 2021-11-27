@@ -1,6 +1,5 @@
 const { spawn } = require('child_process')
-const Config = require('./config');
-const config = new Config();
+const config = require('./config');
 
 module.exports = class Repository {
 	constructor(repository, workdir) {
@@ -12,7 +11,7 @@ module.exports = class Repository {
 	async run_script(command, args, options) {
 		console.log(command);
 		return new Promise( (resolve, reject) => {
-			const child = spawn(`${__dirname}/scripts/${command}.sh`, args, options);
+			const child = spawn(`${__dirname}/../scripts/${command}.sh`, args, options);
 			let output = "";
 			child.stdout.on('data', (data) => {
 			  console.log(`${data}`);

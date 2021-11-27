@@ -1,30 +1,60 @@
-require('dotenv').config();
-const fs = require('fs');
 const Eris = require("eris");
-const util = require('util');
-const Worker = require('./worker');
+const Worker = require('./src/worker');
+const config = require('./src/config');
+const yargs = require('yargs');
 
-WORKDIR = "/tmp";
-REPOSITORY = "https://github.com/OlympusDAO/olympus-frontend.git"
-DEFAULT_OUTPUT_CHANNEL = "905554834617405471";
-STATS_INTERVAL = 1000 * 60 * 60 * 60 * 24; 
 
-var bot = new Eris(process.env.DISCORD_BOT_TOKEN);
-const worker = new Worker(bot, REPOSITORY, WORKDIR);
-// Replace TOKEN with your bot account's token
+var bot = new Eris(config.get("bot_token"));
+const worker = new Worker(bot, config.get("repository"), config.get("workdir"));
 
-bot.on("ready", () => { // When the bot is ready
-    console.log("Ready!"); // Log "Ready!"
-});
+function listen() {
+    bot.on("ready", () => { // When the bot is ready
+        console.log("Ready!"); 
+    });
 
-bot.on("error", (err) => {
-  console.error(err); // or your preferred logger
-});
+    bot.on("error", (err) => {
+      console.error(err); 
+    });
 
-bot.on("messageCreate", async (msg) => { // When a message is created
-    worker.handle_message(msg);
-});
+    bot.on("messageCreate", async (msg) => { // When a message is created
+        worker.handle_message(msg);
+    });
 
-bot.connect(); // Get the bot to connect to Discord
+    bot.connect(); // Get the bot to connect to Discord
+}
 
-setInterval(() => { worker.send_stats(DEFAULT_OUTPUT_CHANNEL) }, STATS_INTERVAL);
+function send_stats(argv) {
+    bot.on("ready", () => { // When the bot is ready
+        worker.send_stats(argv._[argv._.length - 1]);
+        bot.disconnect();
+    });
+    bot.connect(); // Get the bot to connect to Discord
+}
+
+
+const argv = yargs
+    .command('listen', 'Listen to message in the Olympus app translations channel', listen)
+    .command('send', 'Send a message to a channel', (yargs) => {
+        return yargs.command('stats', 'Send translations stats to a channel', (yargs) => {
+                return yargs.positional("channel", {
+                    describe: "Channel to send the message to"
+                })
+            }, send_stats
+        );
+     })
+    .help()
+    .alias('help', 'h')
+    .argv;
+
+    /*
+if (argv._.includes('listen')) {
+    
+}
+else if (argv._.includes('send')) {
+    worker.send_stats()
+}
+else {
+    console.error("Unknown command");
+}
+*/
+
