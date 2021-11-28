@@ -1,7 +1,6 @@
 const Repository = require('./repository');
 const config = require('./config');
 
-TRIGGER = "!stats";
 BQ = "\`\`\`";
 
 module.exports = class Worker {
@@ -21,17 +20,17 @@ module.exports = class Worker {
 	}
 	async handle_message(msg) {
 
-	    if (msg.content.startsWith(TRIGGER)) {
+	    if (msg.content == "!stats") {
 	        console.log("Message received from", msg.channel.id);
 	        if (!config.get("whitelisted_channels").includes(msg.channel.id)) {
 	            this.respond(msg, "I don't know you.");
 	            return;
 	        } 
 	        if (this.status != "waiting") {
-	            this.respond(msg, `I am busy ${STATUS}`);
+	            this.respond(msg, `I am busy ${this.status}.`);
 	            return;
 	        } 
-	        this.status = "working"
+	        this.status = "computing stats"
 	        try {
 	           const stats = await this.repository.get_stats();
 	           this.respond(msg, stats);
